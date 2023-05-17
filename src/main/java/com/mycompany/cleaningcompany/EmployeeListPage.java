@@ -1,13 +1,17 @@
 package com.mycompany.cleaningcompany;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -23,25 +27,57 @@ public class EmployeeListPage extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Employee List");
 
-        VBox vbox = new VBox();
-        vbox.setPadding(new Insets(20));
-        vbox.setSpacing(10);
-
-        ListView<String> employeeListView = new ListView<>();
-        employeeListView.setPrefHeight(200);
-
         ArrayList<Employee> employeeList = SystemIOHandler.readEmployeeFromFile(filePath);
-        ObservableList<String> employeeNames = FXCollections.observableArrayList();
-        for (Employee employee : employeeList) {
-            String name = employee.getUsername();
-            employeeNames.add(name);
+
+        int numRows = employeeList.size();
+        int numCols = 5;
+        String[][] data = new String[numRows][numCols];
+
+        // Add column headers
+        String[] columnHeaders = { "Name", "Assign Work", "Hour", "Location", "Address" };
+
+        // Add employee data
+        for (int i = 0; i < numRows; i++) {
+            Employee employee = employeeList.get(i);
+            data[i] = new String[] {
+                    employee.getUsername(),
+                    employee.getAssignWork(),
+                    employee.getHour(),
+                    employee.getLocation(),
+                    employee.getAddress()
+            };
         }
-        employeeListView.setItems(employeeNames);
 
-        vbox.getChildren().addAll(new Label("Employee List"), employeeListView);
+        TableView<String[]> table = new TableView<>();
 
-        Scene scene = new Scene(vbox, 300, 250);
+        // Create table columns
+        for (int i = 0; i < numCols; i++) {
+            TableColumn<String[], String> column = new TableColumn<>(columnHeaders[i]);
+            final int colIndex = i;
+            column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[colIndex]));
+            table.getColumns().add(column);
+        }
+
+        // Add table data
+        ObservableList<String[]> tableData = FXCollections.observableArrayList();
+        tableData.addAll(data);
+        table.setItems(tableData);
+
+        Button backButton = new Button("Back");
+        backButton.setOnAction(event -> {
+            LoginForm loginForm = new LoginForm();
+            loginForm.start(new Stage());
+            primaryStage.close();
+        });
+        
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(table);
+        borderPane.setBottom(backButton);
+        BorderPane.setAlignment(backButton, Pos.CENTER);
+        BorderPane.setMargin(backButton, new Insets(20));
+        
+        Scene scene = new Scene(borderPane);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-}
+}        

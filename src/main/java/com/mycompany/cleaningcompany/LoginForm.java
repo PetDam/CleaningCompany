@@ -50,7 +50,7 @@ public class LoginForm extends Application {
             String password = passwordField.getText();
             if (isValidCredentials(username, password)) {
                 System.out.println("Login successful!");
-                EmployeeList.viewEmployees();
+                EmployeeList.addEmployees();
             } else {
                 System.out.println("Invalid credentials. Please try again.");
             }

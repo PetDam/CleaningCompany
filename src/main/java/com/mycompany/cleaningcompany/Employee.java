@@ -5,6 +5,8 @@ import java.util.ArrayList;
 public class Employee extends User {
     public static ArrayList<Employee> employeeList = SystemIOHandler.readEmployeeFromFile("data/save/clients.dat");
 
+    private int employeeID;
+    private static int currentEmployeeId = 1;
     private String username;
     private String password;
     private String assignWork;
@@ -12,13 +14,29 @@ public class Employee extends User {
     private String location;
     private String address;
 
-    public Employee(String username, String password, String assignWork, String hour, String location, String address) {
+    public Employee(String username, String password, String assignWork, String hour, String location,
+            String address) {
+        this.employeeID = getNextEmployeeId();
         this.username = username;
         this.password = password;
         this.assignWork = assignWork;
         this.hour = hour;
         this.location = location;
         this.address = address;
+    }
+
+    public int getEmployeeID() {
+        return employeeID;
+    }
+
+    public void setEmployeeID(int employeeID) {
+        this.employeeID = employeeID;
+    }
+
+    public static int getNextEmployeeId() {
+        int ID = currentEmployeeId;
+        currentEmployeeId++;
+        return ID;
     }
 
     public String getUsername() {
