@@ -1,14 +1,8 @@
 package com.mycompany.cleaningcompany;
 
-import java.util.ArrayList;
-
 public class Employee extends User {
-    public static ArrayList<Employee> employeeList = SystemIOHandler.readEmployeeFromFile("data/save/clients.dat");
-
     private int employeeID;
     private static int currentEmployeeId = 1;
-    private String username;
-    private String password;
     private String assignWork;
     private String hour;
     private String location;
@@ -16,9 +10,8 @@ public class Employee extends User {
 
     public Employee(String username, String password, String assignWork, String hour, String location,
             String address) {
+        super(username, password);
         this.employeeID = getNextEmployeeId();
-        this.username = username;
-        this.password = password;
         this.assignWork = assignWork;
         this.hour = hour;
         this.location = location;
@@ -37,22 +30,6 @@ public class Employee extends User {
         int ID = currentEmployeeId;
         currentEmployeeId++;
         return ID;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getAssignWork() {
