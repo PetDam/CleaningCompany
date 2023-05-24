@@ -20,7 +20,6 @@ import javafx.util.Duration;
 
 public class LoginForm extends Application {
     private static final String filePath = "data/save/clients.dat";
-    private static final String BACKGROUND_IMAGE_PATH = "file:images/login.jpg";
 
     public static void main(String[] args) {
         launch(args);
