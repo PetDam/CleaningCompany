@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -18,8 +19,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+
 public class LoginForm extends Application {
-    private static final String filePath = "data/save/clients.dat";
+    private static final String userFilePath = "data/save/users.dat";
+    private static final String BACKGROUND_IMAGE_PATH = "file:images/login.jpg";
 
     public static void main(String[] args) {
         launch(args);
@@ -38,23 +42,31 @@ public class LoginForm extends Application {
         stackPane.getChildren().add(backgroundImageView);
 
         VBox vbox = new VBox();
-        vbox.setPadding(new Insets(20));
-        vbox.setSpacing(10);
+        vbox.setPadding(new Insets(30));
+        vbox.setSpacing(15);
         vbox.setAlignment(Pos.CENTER);
 
+        HBox usernameBox = new HBox();
+        usernameBox.setSpacing(6);
+        usernameBox.setAlignment(Pos.CENTER);
+
         Label usernameLabel = new Label("Username:");
-        usernameLabel.setPrefWidth(80);
         usernameLabel.setStyle("-fx-text-fill: white;");
 
         TextField usernameField = new TextField();
-        usernameField.setPrefWidth(150);
+
+        usernameBox.getChildren().addAll(usernameLabel, usernameField);
+
+        HBox passwordBox = new HBox();
+        passwordBox.setSpacing(10);
+        passwordBox.setAlignment(Pos.CENTER);
 
         Label passwordLabel = new Label("Password:");
-        passwordLabel.setPrefWidth(80);
         passwordLabel.setStyle("-fx-text-fill: white;");
 
         PasswordField passwordField = new PasswordField();
-        passwordField.setPrefWidth(150);
+
+        passwordBox.getChildren().addAll(passwordLabel, passwordField);
 
         HBox buttonsBox = new HBox();
         buttonsBox.setSpacing(10);
@@ -64,56 +76,73 @@ public class LoginForm extends Application {
         loginButton.setOnAction(e -> {
             String username = usernameField.getText();
             String password = passwordField.getText();
-            if (isValidCredentials(username, password)) {
-                System.out.println("Login successful!");
-                EmployeeList.addEmployees();
-            } else {
-                System.out.println("Invalid credentials. Please try again.");
-            }
-            usernameField.clear();
-            passwordField.clear();
+            isValidCredentials(username, password, primaryStage);
         });
 
         Button signUpButton = new Button("Sign Up");
         signUpButton.setOnAction(e -> {
-            String username = usernameField.getText();
-            String password = passwordField.getText();
             System.out.println("Sign Up button clicked!");
-            usernameField.clear();
-            passwordField.clear();
+            SignUpForm signUpPage = new SignUpForm();
+            signUpPage.start(new Stage());
+            primaryStage.close();
         });
 
         buttonsBox.getChildren().addAll(loginButton);
         vbox.getChildren().addAll(
-                new HBox(usernameLabel, usernameField),
-                new HBox(passwordLabel, passwordField),
+                usernameBox,
+                passwordBox,
                 buttonsBox,
                 createLabel("Don't Have an Account?", "-fx-text-fill: white;"),
-                signUpButton
-        );
+                signUpButton);
 
-        StackPane rootPane = new StackPane(stackPane, vbox);
+        stackPane.getChildren().add(vbox);
 
-        Scene scene = new Scene(rootPane, 300, 200);
+        Scene scene = new Scene(stackPane, 400, 300);
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        // Move the background image
-        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(20), stackPane);
-        translateTransition.setByX(200);
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(3), backgroundImageView);
+        translateTransition.setByX(20);
         translateTransition.setCycleCount(Animation.INDEFINITE);
         translateTransition.setAutoReverse(true);
         translateTransition.play();
     }
 
-    private boolean isValidCredentials(String username, String password) {
-        // Code to check credentials against the file
-        return true;
+    private boolean isValidCredentials(String username, String password, Stage primaryStage) {
+        ArrayList<User> userList = UserList.readUserFromFile(userFilePath);
+        boolean isAdmin = false;
+
+        for (User user : userList) {
+            if (user instanceof Employee && user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                Employee.showEmployeePage(new Stage(), (Employee) user);
+                return true;
+            } else if (user instanceof Admin && user.getUsername().equals("admin") && user.getPassword().equals("")) {
+                Admin.showAdminPage(new Stage(), user);
+                return true;
+            } else {
+                showAlert("Invalid Credentials", "The entered username or password is incorrect.");
+                return false;
+            } 
+        }
+
+        if (!isAdmin) {
+            showAlert("Invalid Credentials", "The entered username or password is incorrect.");
+        }
+
+        return false;
     }
 
     private Label createLabel(String text, String style) {
         Label label = new Label(text);
         label.setStyle(style);
         return label;
+    }
+
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

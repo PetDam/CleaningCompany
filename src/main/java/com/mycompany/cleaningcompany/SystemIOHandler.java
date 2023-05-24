@@ -39,11 +39,11 @@ public class SystemIOHandler {
                 } catch (EOFException e) {
                     endOfFile = true;
                 } catch (ClassNotFoundException ex) {
-                    System.out.println("ERROR: Unable to unpack ClientV2 object!");
+                    System.out.println("ERROR: Unable to unpack User object!");
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("ERROR: Cannot find client file!");
+            System.out.println("ERROR: Cannot find user file!");
         } catch (IOException e) {
             System.out.println("ERROR: There was a problem reading from file!");
         }
@@ -60,49 +60,6 @@ public class SystemIOHandler {
             }
         } catch (IOException e) {
             System.out.println("ERROR: There was a problem writing to file!");
-        }
-    }
-
-    public static void addNewEmployeeManually(ArrayList<Employee> employeeList) {
-        String employeeFile = "data/save/clients.dat";
-        try (Scanner input = new Scanner(java.lang.System.in)) {
-            String addEmployee = "";
-            String addPassword = "";
-            String addAssignWork = "";
-            String addHour = "";
-            String addLocation = "";
-            String addAddress = "";
-            boolean isValidInput = false;
-
-            while (!isValidInput) {
-                try {
-                    System.out.println("Enter employee's name:");
-                    addEmployee = input.nextLine();
-                    System.out.println("Enter employee's password:");
-                    addPassword = input.nextLine();
-                    System.out.println("Enter employee's assign work:");
-                    addAssignWork = input.nextLine();
-                    System.out.println("Enter the time for the employee's work:");
-                    addHour = input.nextLine();
-                    System.out.println("Enter the location for the employee's job:");
-                    addLocation = input.nextLine();
-                    System.out.println("Enter the address for the employee's job:");
-                    addAddress = input.nextLine();
-
-                    // Validate input and perform necessary checks
-
-                    isValidInput = true;
-                } catch (Exception e) {
-                    System.out.println("Invalid input. Please enter valid values for all attributes.");
-                    input.nextLine(); // Consume remaining input
-                }
-            }
-
-            Employee newEmployee = new Employee(addEmployee, addPassword, addAssignWork, addHour, addLocation, addAddress);
-            employeeList.add(newEmployee);
-
-            SystemIOHandler.storeEmployeeInFile(employeeList, employeeFile);
-
         }
     }
 }
