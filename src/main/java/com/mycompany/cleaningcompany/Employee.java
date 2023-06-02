@@ -1,18 +1,16 @@
 package com.mycompany.cleaningcompany;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
+import javafx.animation.Animation;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
+import javafx.util.Duration;
 
 public class Employee extends User {
     private int employeeID;
@@ -21,18 +19,15 @@ public class Employee extends User {
     private String hour;
     private String location;
     private String address;
-    private static final String filePath = "data/save/users.dat";
+    private static final String filePath = "data/save/employees.dat";
 
-    public Employee(String username, String password, String assignWork, String hour, String location,
-                    String address) {
+    // Constructor
+    public Employee(String username, String password) {
         super(username, password);
         this.employeeID = getNextEmployeeId();
-        this.assignWork = assignWork;
-        this.hour = hour;
-        this.location = location;
-        this.address = address;
     }
 
+    // Getter and Setter methods
     public int getEmployeeID() {
         return employeeID;
     }
@@ -79,60 +74,58 @@ public class Employee extends User {
         this.address = address;
     }
 
+    // Show the Employee's page
     public static void showEmployeePage(Stage primaryStage, User user) {
-        primaryStage.setTitle("Employee List");
+        primaryStage.setTitle("Employee's Page");
 
-        ArrayList<Employee> employeeList = SystemIOHandler.readEmployeeFromFile(filePath);
+        // Load and set the background image
+        Image backgroundImage = new Image("file:images/employee.jpg");
+        ImageView backgroundImageView = new ImageView(backgroundImage);
 
-        int numRows = employeeList.size();
-        int numCols = 5;
-        String[][] data = new String[numRows][numCols];
+        StackPane stackPane = new StackPane();
+        stackPane.getChildren().add(backgroundImageView);
 
-        // Add column headers
-        String[] columnHeaders = { "Name", "Assign Work", "Hour", "Location", "Address" };
+        // Create a button for showing assignments
+        Button button1 = new Button("Show Your Assignment");
 
-        // Add employee data
-        for (int i = 0; i < numRows; i++) {
-            Employee employee = employeeList.get(i);
-            data[i] = new String[] {
-                    employee.getUsername(),
-                    employee.getAssignWork(),
-                    employee.getHour(),
-                    employee.getLocation(),
-                    employee.getAddress()
-            };
-        }
+        button1.setStyle("-fx-background-color: #f3f1f9; -fx-text-fill: #473e61;");
 
-        TableView<String[]> table = new TableView<>();
+        // Create a VBox to hold the button
+        VBox root = new VBox(10);
+        root.setAlignment(Pos.CENTER);
+        root.getChildren().addAll(button1);
 
-        // Create table columns
-        for (int i = 0; i < numCols; i++) {
-            TableColumn<String[], String> column = new TableColumn<>(columnHeaders[i]);
-            final int colIndex = i;
-            column.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue()[colIndex]));
-            table.getColumns().add(column);
-        }
-
-        // Add table data
-        ObservableList<String[]> tableData = FXCollections.observableArrayList();
-        tableData.addAll(data);
-        table.setItems(tableData);
-
-        Button backButton = new Button("Back");
-        backButton.setOnAction(event -> {
-            LoginForm loginForm = new LoginForm();
-            loginForm.start(new Stage());
-            primaryStage.close();
+        // Set action for the button
+        button1.setOnAction(e -> {
+            ShowAssign showAssignPage = new ShowAssign();
+            showAssignPage.start(primaryStage);
         });
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(table);
-        borderPane.setBottom(backButton);
-        BorderPane.setAlignment(backButton, Pos.CENTER);
-        BorderPane.setMargin(backButton, new Insets(20));
+        // Create a logout button
+        Button logoutButton = new Button("Logout");
+        logoutButton.setStyle("-fx-background-color: #f3f1f9; -fx-text-fill: #473e61;");
+        logoutButton.setOnAction(e -> {
+            LoginForm loginForm = new LoginForm();
+            loginForm.start(primaryStage);
+        });
 
-        Scene scene = new Scene(borderPane);
+        // Create a VBox to hold the button and the logout button
+        VBox vbox = new VBox(10);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.getChildren().addAll(root, logoutButton);
+
+        stackPane.getChildren().add(vbox);
+
+        // Create the scene and set it to the stage
+        Scene scene = new Scene(stackPane, 400, 300);
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        // Apply animation to the background image
+        TranslateTransition translateTransition = new TranslateTransition(Duration.seconds(3), backgroundImageView);
+        translateTransition.setByX(20);
+        translateTransition.setCycleCount(Animation.INDEFINITE);
+        translateTransition.setAutoReverse(true);
+        translateTransition.play();
     }
 }
