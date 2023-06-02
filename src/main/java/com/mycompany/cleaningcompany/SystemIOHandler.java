@@ -51,12 +51,12 @@ public class SystemIOHandler {
         return myEmployees;
     }
 
-    public static void storeEmployeeInFile(ArrayList employeeList, String filePath) {
+    public static void storeEmployeeInFile(ArrayList<Employee> employeeList, String filePath) {
         try (
                 FileOutputStream employeeFile = new FileOutputStream(filePath);
-                ObjectOutputStream employeeStream = new ObjectOutputStream(employeeFile);) {
-            for (Object el : employeeList) {
-                employeeStream.writeObject(el);
+                ObjectOutputStream employeeStream = new ObjectOutputStream(employeeFile)) {
+            for (Employee employee : employeeList) {
+                employeeStream.writeObject(employee);
             }
         } catch (IOException e) {
             System.out.println("ERROR: There was a problem writing to file!");
