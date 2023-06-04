@@ -80,11 +80,11 @@ public class AddAssign extends Application {
         gridPane.add(buttonsVBox, 0, 5, 2, 1);
         GridPane.setHalignment(buttonsVBox, HPos.CENTER);
 
-        userLabel.setStyle("-fx-text-fill: #473e61 ; -fx-background-color: #c6bde1;");
-        titleLabel.setStyle("-fx-text-fill: #473e61; -fx-background-color: #c6bde1;");
-        hourLabel.setStyle("-fx-text-fill: #473e61; -fx-background-color: #c6bde1;");
-        locationLabel.setStyle("-fx-text-fill: #473e61; -fx-background-color: #c6bde1;");
-        addressLabel.setStyle("-fx-text-fill: #473e61; -fx-background-color: #c6bde1;");
+        userLabel.setStyle("-fx-text-fill: black;");
+        titleLabel.setStyle("-fx-text-fill: black;");
+        hourLabel.setStyle("-fx-text-fill: black;");
+        locationLabel.setStyle("-fx-text-fill: black;");
+        addressLabel.setStyle("-fx-text-fill: black;");
 
         submitButton.setStyle("-fx-background-color: #c6bde1; -fx-text-fill: #473e61;");
         submitButton.setOnAction(event -> {

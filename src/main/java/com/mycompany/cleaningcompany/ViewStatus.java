@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -79,12 +80,12 @@ public class ViewStatus extends Application {
         GridPane.setHalignment(buttonsVBox, HPos.CENTER);
 
         // Set styles for labels and button
-        nameLabel.setStyle("-fx-text-fill: #191919; -fx-background-color: #e5e5e5;");
-        assignLabel.setStyle("-fx-text-fill: #191919; -fx-background-color: #e5e5e5;");
-        hourLabel.setStyle("-fx-text-fill: #191919; -fx-background-color: #e5e5e5;");
-        locationLabel.setStyle("-fx-text-fill: #191919; -fx-background-color: #e5e5e5;");
-        addressLabel.setStyle("-fx-text-fill: #191919; -fx-background-color: #e5e5e5;");
-        statusLabel.setStyle("-fx-text-fill: #191919; -fx-background-color: #e5e5e5;");
+        nameLabel.setStyle("-fx-text-fill: #191919;");
+        assignLabel.setStyle("-fx-text-fill: #191919;");
+        hourLabel.setStyle("-fx-text-fill: #191919;");
+        locationLabel.setStyle("-fx-text-fill: #191919;");
+        addressLabel.setStyle("-fx-text-fill: #191919;");
+        statusLabel.setStyle("-fx-text-fill: #191919;");
         backButton.setStyle("-fx-background-color: #e5e5e5; -fx-text-fill: #191919;");
 
         // Set action for back button
@@ -151,6 +152,8 @@ public class ViewStatus extends Application {
                 String[] fields = line.split(",");
                 names.addAll(fields[0]);
             }
+        } catch (FileNotFoundException e) {
+            System.out.println("Τhere are no entries yet!");
         } catch (IOException e) {
             e.printStackTrace();
         }
